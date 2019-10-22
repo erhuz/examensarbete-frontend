@@ -1,5 +1,5 @@
-# VCS Epmloyee Frontend
-This is a Dashboard for the employees of VCS.
+# VCS Frontend
+This is a combined frontend for the customers but also employees of VCS.
 
 # Folder Structure
 ```
