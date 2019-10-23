@@ -3,7 +3,7 @@ import {
   Link
 } from "react-router-dom";
 import { ReactReduxContext } from 'react-redux';
-import { Menu, Dropdown, Icon, Image } from 'semantic-ui-react';
+import { Menu, Dropdown, Label, Image, Icon } from 'semantic-ui-react';
 
 
 
@@ -12,22 +12,20 @@ export default class Header extends Component {
     super(props);
 
     this.state = {
-      user: {
-        name: null,
-        email: null,
-        img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=120&q=80',
-      }
     }
   }
 
   componentDidMount() {
+    console.log('HEADER MOUNTED');
+
+
     this.userLogin();
   }
 
   userLogin = () => {
     const fakeForm = new FormData();
     // fakeForm.append('name', 'John Doe');
-    fakeForm.append('email', 'john.doe@example.com');
+    fakeForm.append('email', 'benjamin@cafcon.se');
     fakeForm.append('password', 'pass1234');
     // fakeForm.append('password_confirmation', 'pass1234');
 
@@ -50,6 +48,33 @@ export default class Header extends Component {
     })
   }
 
+  getAndSetUserDataIfAuthenticated = () => {
+    const { access_token } = this.props;
+
+    if(access_token !== null){
+      fetch(process.env.REACT_APP_BACKEND_REST_API + '/user', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${access_token}`,
+        }
+      })
+      .then(res => res.json())
+      .then(json => {
+        this.props.SET_ACCOUNT_DATA({
+          account_name: json.name,
+          account_email: json.email,
+          account_img: null,
+        });
+        return true;
+      })
+      .catch(err => {
+        console.error(err);
+        return false;
+      })
+    }
+  }
+
   userLogout = () => {
     this.props.REMOVE_ACCESS_TOKEN();
   }
@@ -57,7 +82,14 @@ export default class Header extends Component {
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   render() {
+    this.getAndSetUserDataIfAuthenticated();
+
+
     const { activeItem } = this.state
+
+    // INLINE STYLES
+    const marginTopStyles = {marginTop: 18};
+    const floatRightStyles = {float: 'right'};
 
     const itemsData = [
       { href:'/', title: 'Home' },
@@ -81,61 +113,72 @@ export default class Header extends Component {
       />
     ));
 
-    return (
-      <ReactReduxContext.Consumer>
-        {({store}) => {
-          const { access_token } = store.getState().authReducer;
+    const CustomerLabel = (<Label style={floatRightStyles} color='teal'>Customer</Label>);
+    const EmployeeLabel = (<Label style={floatRightStyles} color='green'>Employee</Label>);
 
-          let profileButton = (
-            <Menu.Item
+    const ActiveLabel = () => {
+      if(this.props.account_role === 'Employee'){
+        return EmployeeLabel
+      }else{
+        return CustomerLabel
+      }
+    }
+
+
+    const testEl = () => {
+      const { access_token } = this.props;
+
+        let profileOrLoginButton = (
+          <Menu.Item
+            position='right'
+            name='login'
+            active={activeItem === 'login'}
+            onClick={this.userLogin}
+            content='Log In'
+          />
+        )
+
+        if(access_token !== null){
+          profileOrLoginButton = (
+            <Dropdown
+              as={Menu.Item}
               position='right'
-              name='login'
-              active={activeItem === 'login'}
-              onClick={this.userLogin}
-              content='Log In'
-            />
+              text={this.props.account_name}
+              item
+              simple
+            >
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <div>
+                    <Image src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=120&q=80' avatar />
+                    {CustomerLabel}
+                  </div>
+                  <div style={marginTopStyles}>
+                    <span>{this.props.account_email}</span>
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Divider/>
+                <Dropdown.Item>Account <Icon name='user' style={floatRightStyles} /></Dropdown.Item>
+                <Dropdown.Item onClick={this.userLogout}>Log Out <Icon name='log out' style={floatRightStyles} /></Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           )
-
-          if(access_token !== null){
-            console.log('access_token is not null');
-
-            profileButton = (
-              <Dropdown
-                as={Menu.Item}
-                position='right'
-                text='Profile'
-                item
-                simple
-              >
-                <Dropdown.Menu>
-                  <Dropdown.Item style={{hover: { backgroundColor: '#fff !important' }}}>
-                    <div>
-                      <Image src='https://react.semantic-ui.com/images/wireframe/square-image.png' avatar />
-                      <span style={{marginLeft: 8}}>John Doe</span>
-                    </div>
-                    <div style={{marginTop: 18}}>
-                      john.doe@example.com
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Divider/>
-                  <Dropdown.Item onClick={this.userLogout}>Log Out</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            )
-          }else {
-            console.log('access_token is nulled');
-          }
+        }
 
 
-          return(
-          <Menu>
-            { menuItems }
+        return(
+            <>
+              { menuItems }
+              { profileOrLoginButton }
+            </>
+        );
+    }
 
-            { profileButton }
-          </Menu>
-          );
-        }}
-      </ReactReduxContext.Consumer>
+    // Move logic out of render function with the help of this.props
+    return (
+      <Menu>
+        {testEl()}
+      </Menu>
     )
   }
 }
