@@ -36,25 +36,6 @@ class App extends Component {
           <ReactReduxContext.Consumer>
             {({store}) => {
 
-              setTimeout( () => {
-              const { access_token } = store.getState().authReducer;
-
-                console.log('This is logged from the /api/user');
-
-                if(access_token !== null){
-                  fetch(process.env.REACT_APP_BACKEND_REST_API + '/user', {
-                    method: 'GET',
-                    headers: {
-                      Accept: 'application/json',
-                      Authorization: `Bearer ${access_token}`,
-                    }
-                  })
-                  .then(res => res.json())
-                  .then(json => {console.log(json)})
-                  .catch(err => {console.error(err);})
-                }
-              }, 1000);
-
             }}
           </ReactReduxContext.Consumer>
             <Switch>
