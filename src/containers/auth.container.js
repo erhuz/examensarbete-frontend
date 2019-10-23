@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(REMOVE_ACCESS_TOKEN());
     },
     SET_ACCOUNT_DATA: (account_data) => {
-      dispatch(SET_ACCESS_TOKEN(account_data));
+      dispatch(SET_ACCOUNT_DATA(account_data));
     },
     REMOVE_ACCOUNT_DATA: () => {
       dispatch(REMOVE_ACCOUNT_DATA());
