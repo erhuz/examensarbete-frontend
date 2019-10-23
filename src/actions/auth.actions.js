@@ -14,29 +14,15 @@ export const REMOVE_ACCESS_TOKEN = () =>{
 };
 
 // Set the authentants profile image
-export const SET_ACCOUNT_PICTURE = () =>{
+export const SET_ACCOUNT_DATA = () =>{
   return {
-    type: 'SET_ACCOUNT_PICTURE'
+    type: 'SET_ACCOUNT_DATA'
   }
 };
 
 // Remove the authentants profile image
-export const REMOVE_ACCOUNT_PICTURE = () =>{
+export const REMOVE_ACCOUNT_DATA = () =>{
   return {
-    type: 'REMOVE_ACCOUNT_PICTURE'
-  }
-};
-
-// Set the authentants profile name
-export const SET_ACCOUNT_NAME = () =>{
-  return {
-    type: 'SET_ACCOUNT_NAME'
-  }
-};
-
-// Remove the authentants profile name
-export const REMOVE_ACCOUNT_NAME = () =>{
-  return {
-    type: 'REMOVE_ACCOUNT_NAME'
+    type: 'REMOVE_ACCOUNT_DATA'
   }
 };
