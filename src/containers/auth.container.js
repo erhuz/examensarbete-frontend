@@ -1,11 +1,14 @@
 import { connect } from 'react-redux';
-import Token from 'components/Token';
-import { SET_ACCESS_TOKEN, REMOVE_ACCESS_TOKEN } from 'actions/auth.actions';
+import Header from 'partials/Header';
+import {
+  SET_ACCESS_TOKEN,
+  REMOVE_ACCESS_TOKEN,
+  SET_ACCOUNT_DATA,
+  REMOVE_ACCOUNT_DATA
+} from 'actions/auth.actions';
 
-const mapStateToProps = (state) => {
-  return {
-    data: null,
-  }
+const mapStateToProps = ({authReducer}) => {
+  return authReducer;
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -15,13 +18,19 @@ const mapDispatchToProps = (dispatch) => {
     },
     REMOVE_ACCESS_TOKEN: () => {
       dispatch(REMOVE_ACCESS_TOKEN());
+    },
+    SET_ACCOUNT_DATA: (account_data) => {
+      dispatch(SET_ACCESS_TOKEN(account_data));
+    },
+    REMOVE_ACCOUNT_DATA: () => {
+      dispatch(REMOVE_ACCOUNT_DATA());
     }
   }
 }
 
-const TokenContainer = connect(
+const HeaderContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Token)
+)(Header)
 
-export default TokenContainer;
+export default HeaderContainer;
