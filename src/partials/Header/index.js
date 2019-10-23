@@ -3,7 +3,7 @@ import {
   Link
 } from "react-router-dom";
 import { ReactReduxContext } from 'react-redux';
-import { Menu, Dropdown, Icon } from 'semantic-ui-react';
+import { Menu, Dropdown, Icon, Image } from 'semantic-ui-react';
 
 
 
@@ -26,10 +26,10 @@ export default class Header extends Component {
 
   userLogin = () => {
     const fakeForm = new FormData();
-    fakeForm.append('name', 'John Doe');
+    // fakeForm.append('name', 'John Doe');
     fakeForm.append('email', 'john.doe@example.com');
     fakeForm.append('password', 'pass1234');
-    fakeForm.append('password_confirmation', 'pass1234');
+    // fakeForm.append('password_confirmation', 'pass1234');
 
     fetch(process.env.REACT_APP_BACKEND_REST_API + '/login', {
       method: 'POST',
@@ -61,7 +61,7 @@ export default class Header extends Component {
 
     const itemsData = [
       { href:'/', title: 'Home' },
-      { href:'/about', title: 'About' },
+      { href:'/support', title: 'Support' },
       { href:'/contact', title: 'Contact' },
     ].map( item => {
       item.slug = item.title.replace(' ', '-').toLowerCase();
@@ -89,12 +89,10 @@ export default class Header extends Component {
           let profileButton = (
             <Menu.Item
               position='right'
-              as={Link}
-              to='/login'
-              key='login'
+              name='login'
               active={activeItem === 'login'}
               onClick={this.userLogin}
-              content={'Log In'}
+              content='Log In'
             />
           )
 
@@ -105,13 +103,20 @@ export default class Header extends Component {
               <Dropdown
                 as={Menu.Item}
                 position='right'
+                text='Profile'
                 item
-                icon='user'
-                text='John Doe'
                 simple
               >
                 <Dropdown.Menu>
-                  <Dropdown.Header>john.doe@example.com</Dropdown.Header>
+                  <Dropdown.Item style={{hover: { backgroundColor: '#fff !important' }}}>
+                    <div>
+                      <Image src='https://react.semantic-ui.com/images/wireframe/square-image.png' avatar />
+                      <span style={{marginLeft: 8}}>John Doe</span>
+                    </div>
+                    <div style={{marginTop: 18}}>
+                      john.doe@example.com
+                    </div>
+                  </Dropdown.Item>
                   <Dropdown.Divider/>
                   <Dropdown.Item onClick={this.userLogout}>Log Out</Dropdown.Item>
                 </Dropdown.Menu>
