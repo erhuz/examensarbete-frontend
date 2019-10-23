@@ -3,8 +3,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route
-} from "react-router-dom";
+} from 'react-router-dom';
 import { ReactReduxContext } from 'react-redux';
+import { Container } from 'semantic-ui-react';
 
 import Header from 'partials/Header';
 import Footer from 'partials/Footer';
@@ -24,42 +25,46 @@ class App extends Component {
 
   render() {
 
+    const appContainerStyles = {
+      marginTop: 24,
+    }
+
     return (
-      <Router>
-        <Token />
-        <ReactReduxContext.Consumer>
-          {({store}) => {
-            console.log(store);
+      <Container style={appContainerStyles}>
+        <Router>
+          <Token />
+          <ReactReduxContext.Consumer>
+            {({store}) => {
 
-            setTimeout( () => {
-            const { access_token } = store.getState().tokenReducer;
+              setTimeout( () => {
+              const { access_token } = store.getState().authReducer;
 
-              console.log('This is logged from the /api/user');
+                console.log('This is logged from the /api/user');
 
-              if(access_token !== null){
-                fetch(process.env.REACT_APP_BACKEND_REST_API + '/user', {
-                  method: 'GET',
-                  headers: {
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${access_token}`,
-                  }
-                })
-                .then(res => res.json())
-                .then(json => {console.log(json)})
-                .catch(err => {console.error(err);})
-              }
-            }, 1000);
+                if(access_token !== null){
+                  fetch(process.env.REACT_APP_BACKEND_REST_API + '/user', {
+                    method: 'GET',
+                    headers: {
+                      Accept: 'application/json',
+                      Authorization: `Bearer ${access_token}`,
+                    }
+                  })
+                  .then(res => res.json())
+                  .then(json => {console.log(json)})
+                  .catch(err => {console.error(err);})
+                }
+              }, 1000);
 
-          }}
-        </ReactReduxContext.Consumer>
-        <Header/>
-          <Switch>
-            <Route exact path="/" component={Index} />
-            <Route path="/about" component={About} />
-            <Route path="/contact" component={Contact} />
-          </Switch>
-        <Footer/>
-      </Router>
+            }}
+          </ReactReduxContext.Consumer>
+            <Switch>
+              <Route exact path='/' component={Index} />
+              <Route path='/about' component={About} />
+              <Route path='/contact' component={Contact} />
+            </Switch>
+          <Footer/>
+        </Router>
+      </Container>
     );
   }
 }
