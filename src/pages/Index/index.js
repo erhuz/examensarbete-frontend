@@ -1,10 +1,11 @@
 import React from 'react';
+import Layout from 'layouts/Default';
 
 function Index() {
   return (
-    <div>
+    <Layout>
       Home
-    </div>
+    </Layout>
   );
 }
 
