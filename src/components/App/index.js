@@ -7,14 +7,14 @@ import {
 import { ReactReduxContext } from 'react-redux';
 import { Container } from 'semantic-ui-react';
 
-import Header from 'partials/Header';
+import Header from 'containers/auth.container';
 import Footer from 'partials/Footer';
 
 import Index from 'pages/Index';
-import About from 'pages/About';
+import Support from 'pages/Support';
 import Contact from 'pages/Contact';
+import NotFound from 'pages/NotFound';
 
-import Token from 'containers/auth.container';
 
 class App extends Component {
   constructor (props){
@@ -32,7 +32,7 @@ class App extends Component {
     return (
       <Container style={appContainerStyles}>
         <Router>
-          <Token />
+          <Header />
           <ReactReduxContext.Consumer>
             {({store}) => {
 
@@ -59,8 +59,9 @@ class App extends Component {
           </ReactReduxContext.Consumer>
             <Switch>
               <Route exact path='/' component={Index} />
-              <Route path='/about' component={About} />
+              <Route path='/support' component={Support} />
               <Route path='/contact' component={Contact} />
+              <Route component={NotFound} />
             </Switch>
           <Footer/>
         </Router>
