@@ -1,12 +1,12 @@
 import React from 'react';
 import Layout from 'layouts/Default';
 
-function About() {
+function Support() {
   return (
     <Layout>
-      About
+      Support
     </Layout>
   );
 }
 
-export default About;
+export default Support;
