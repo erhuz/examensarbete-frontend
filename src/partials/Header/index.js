@@ -23,20 +23,19 @@ export default class Header extends Component {
   }
 
   userLogin = () => {
-    const fakeForm = new FormData();
-    // fakeForm.append('name', 'John Doe');
-    fakeForm.append('email', 'benjamin@cafcon.se');
-    fakeForm.append('password', 'pass1234');
-    // fakeForm.append('password_confirmation', 'pass1234');
+    const userForm = new FormData();
+    userForm.append('name', 'John Doe');
+    userForm.append('email', 'john.doe@example.com');
+    userForm.append('password', 'pass1234');
+    userForm.append('password_confirmation', 'pass1234');
 
     fetch(process.env.REACT_APP_BACKEND_REST_API + '/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         ContentType: 'multipart/form-data',
-
       },
-      body: fakeForm,
+      body: userForm,
     })
     .then(res => res.json())
     .then(json => {
