@@ -40,6 +40,8 @@ export default class Header extends Component {
     .then(res => res.json())
     .then(json => {
       this.props.SET_ACCESS_TOKEN(json.token);
+
+      this.getAndSetUserDataIfAuthenticated();
     })
     .catch(err => {
       console.error('Error Recieved: ' + err);
@@ -60,6 +62,8 @@ export default class Header extends Component {
       })
       .then(res => res.json())
       .then(json => {
+        console.log(json);
+
         this.props.SET_ACCOUNT_DATA({
           account_name: json.name,
           account_email: json.email,
@@ -81,9 +85,6 @@ export default class Header extends Component {
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   render() {
-    this.getAndSetUserDataIfAuthenticated();
-
-
     const { activeItem } = this.state
 
     // INLINE STYLES
