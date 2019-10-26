@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   Link
 } from "react-router-dom";
-import { ReactReduxContext } from 'react-redux';
 import { Menu, Dropdown, Label, Image, Icon } from 'semantic-ui-react';
 
 
@@ -64,10 +63,10 @@ export default class Header extends Component {
       .then(json => {
         console.log(json);
 
-        this.props.SET_ACCOUNT_DATA({
-          account_name: json.name,
-          account_email: json.email,
-          account_img: null,
+        this.props.SET_USER_DATA({
+          name: json.name,
+          email: json.email,
+          img: null,
         });
         return true;
       })
@@ -86,6 +85,14 @@ export default class Header extends Component {
 
   render() {
     const { activeItem } = this.state
+
+    let user = {};
+
+    if(this.props.user.role === 'employee'){
+      user.img = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=120&q=80';
+    }else{
+      user.img = 'https://images.unsplash.com/photo-1483323323858-4916bde7bd5d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=120&h=120&q=80'
+    }
 
     // INLINE STYLES
     const marginTopStyles = {marginTop: 18};
@@ -117,7 +124,7 @@ export default class Header extends Component {
     const EmployeeLabel = (<Label style={floatRightStyles} color='green'>Employee</Label>);
 
     const ActiveLabel = () => {
-      if(this.props.account_role === 'Employee'){
+      if(this.props.user.role === 'Employee'){
         return EmployeeLabel
       }else{
         return CustomerLabel
@@ -143,7 +150,7 @@ export default class Header extends Component {
             <Dropdown
               as={Menu.Item}
               position='right'
-              text={this.props.account_name}
+              text={this.props.user.name}
               item
               simple
             >
@@ -154,7 +161,7 @@ export default class Header extends Component {
                     {CustomerLabel}
                   </div>
                   <div style={marginTopStyles}>
-                    <span>{this.props.account_email}</span>
+                    <span>{this.props.user.email}</span>
                   </div>
                 </Dropdown.Item>
                 <Dropdown.Divider/>

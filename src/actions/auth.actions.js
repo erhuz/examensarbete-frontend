@@ -14,16 +14,16 @@ export const REMOVE_ACCESS_TOKEN = () =>{
 };
 
 // Set the authentants profile image
-export const SET_ACCOUNT_DATA = (account_data) =>{
+export const SET_USER_DATA = (account_data) =>{
   return {
-    type: 'SET_ACCOUNT_DATA',
+    type: 'SET_USER_DATA',
     payload: account_data
   }
 };
 
 // Remove the authentants profile image
-export const REMOVE_ACCOUNT_DATA = () =>{
+export const REMOVE_USER_DATA = () =>{
   return {
-    type: 'REMOVE_ACCOUNT_DATA'
+    type: 'REMOVE_USER_DATA'
   }
 };

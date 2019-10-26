@@ -3,8 +3,8 @@ import Header from 'partials/Header';
 import {
   SET_ACCESS_TOKEN,
   REMOVE_ACCESS_TOKEN,
-  SET_ACCOUNT_DATA,
-  REMOVE_ACCOUNT_DATA
+  SET_USER_DATA,
+  REMOVE_USER_DATA
 } from 'actions/auth.actions';
 
 const mapStateToProps = ({authReducer}) => {
@@ -19,11 +19,11 @@ const mapDispatchToProps = (dispatch) => {
     REMOVE_ACCESS_TOKEN: () => {
       dispatch(REMOVE_ACCESS_TOKEN());
     },
-    SET_ACCOUNT_DATA: (account_data) => {
-      dispatch(SET_ACCOUNT_DATA(account_data));
+    SET_USER_DATA: (user_data) => {
+      dispatch(SET_USER_DATA(user_data));
     },
-    REMOVE_ACCOUNT_DATA: () => {
-      dispatch(REMOVE_ACCOUNT_DATA());
+    REMOVE_USER_DATA: () => {
+      dispatch(REMOVE_USER_DATA());
     }
   }
 }

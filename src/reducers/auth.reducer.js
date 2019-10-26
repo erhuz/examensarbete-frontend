@@ -1,8 +1,10 @@
 const initialState = {
   access_token: null,
-  account_picture: null,
-  account_name: null,
-  account_email: null,
+  user: {
+    profile_picture: null,
+    name: null,
+    email: null,
+  }
 }
 
 const authReducer = (state = initialState, action) => {
@@ -20,20 +22,24 @@ const authReducer = (state = initialState, action) => {
         access_token: null
       };
 
-    case 'SET_ACCOUNT_DATA':
+    case 'SET_USER_DATA':
       return {
         ...state,
-        account_picture: action.payload.account_picture,
-        account_name: action.payload.account_name,
-        account_email: action.payload.account_email,
+        user: {
+          profile_picture: action.payload.profile_picture,
+          name: action.payload.name,
+          email: action.payload.email,
+        }
       }
 
-    case 'REMOVE_ACCOUNT_DATA':
+    case 'REMOVE_USER_DATA':
       return {
         ...state,
-        account_picture: null,
-        account_name: null,
-        account_email: null,
+        user: {
+          profile_picture: null,
+          name: null,
+          email: null,
+        }
       }
 
     default:
