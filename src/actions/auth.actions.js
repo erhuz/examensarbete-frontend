@@ -14,10 +14,10 @@ export const REMOVE_ACCESS_TOKEN = () =>{
 };
 
 // Set the authentants profile image
-export const SET_USER_DATA = (account_data) =>{
+export const SET_USER_DATA = (user_data) =>{
   return {
     type: 'SET_USER_DATA',
-    payload: account_data
+    payload: user_data
   }
 };
 
