@@ -9,3 +9,9 @@ export const userHasRole = (roleName, user) => {
   // If role not found
   return false;
 }
+
+export const getUserRoles = (user) => {
+  return user.roles.map((role) => {
+    return role.name;
+  })
+}
