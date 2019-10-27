@@ -6,7 +6,20 @@ import * as serviceWorker from 'serviceWorker';
 import { createStore } from 'redux';
 import allReducers from 'reducers';
 import { Provider } from 'react-redux';
+import Echo from 'laravel-echo';
 require('dotenv').config(); // Enable dot-env configurations
+
+// Set up Pusher for Laravel Echo
+window.Pusher = require('pusher-js');
+
+// Set up Laravel Echo
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: process.env.REACT_APP_PUSHER_KEY,
+  wsHost: 'http://vcs-backend.test',
+  wsPort: 6001,
+  disableStats: true,
+})
 
 // Create Redux Store
 const store = createStore(
