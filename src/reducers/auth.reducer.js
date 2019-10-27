@@ -4,6 +4,7 @@ const initialState = {
     profile_picture: null,
     name: null,
     email: null,
+    roles: null,
   }
 }
 
@@ -29,6 +30,7 @@ const authReducer = (state = initialState, action) => {
           profile_picture: action.payload.profile_picture,
           name: action.payload.name,
           email: action.payload.email,
+          roles: action.payload.roles,
         }
       }
 
@@ -39,6 +41,7 @@ const authReducer = (state = initialState, action) => {
           profile_picture: null,
           name: null,
           email: null,
+          roles: null,
         }
       }
 
