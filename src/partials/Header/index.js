@@ -62,6 +62,7 @@ export default class Header extends Component {
   userLogout = () => {
     this.props.REMOVE_ACCESS_TOKEN();
     this.props.REMOVE_USER_DATA();
+    this.setUserStatus('offline');
   }
 
   getAndSetUserDataIfAuthenticated = () => {
@@ -99,6 +100,30 @@ export default class Header extends Component {
         console.error(err);
       })
     }
+  }
+
+  setUserStatus = (status) => {
+    const { access_token } = this.props;
+    console.log('user status changed to: ' + status);
+
+    const statusForm = new FormData();
+    statusForm.append('status', status);
+
+    fetch(process.env.REACT_APP_BACKEND_REST_API + '/user/status', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body: statusForm,
+    })
+    .then(res => res.json())
+    .then(json => {
+      this.props.UPDATE_USER_STATUS(json.status);
+    })
+    .catch(err => {
+      console.error(err);
+    });
   }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -155,11 +180,15 @@ export default class Header extends Component {
     const getActiveRoleLabels = () => {
       if(this.props.user.name !== null){
         const userRoles = getUserRoles(this.props.user);
+
+        // Define elements
+        const CustomerLabel = (<Label key='customer' color='teal'>Customer</Label>);
+        const EmployeeLabel = (<Label key='employee' color='yellow'>Employee</Label>);
+
         return userRoles.map(role => {
           switch (role) {
             case 'employee':
               return EmployeeLabel;
-
 
             case 'customer':
               return CustomerLabel;
@@ -173,15 +202,35 @@ export default class Header extends Component {
 
     const getActiveStatusLabel = () => {
       if(this.props.user.status !== null){
-        return (
-          <Label circular color='green' floating>Online</Label>
-        ); // TMP
+        const { status } = this.props.user;
+        console.log(status);
+
+        const OnlineLabel = (<Label circular color='green' floating>Online</Label>);
+        const BusyLabel = (<Label circular color='red' floating>Busy</Label>);
+        const OnBreakLabel = (<Label circular color='yellow' style={{whiteSpace: 'nowrap'}} floating>On Break</Label>);
+        const OfflineLabel = (<Label circular color='grey' floating>Offline</Label>);
+
+
+        switch (status) {
+          case 'online':
+            return OnlineLabel;
+
+          case 'busy':
+            return BusyLabel;
+
+          case 'on_break':
+            return OnBreakLabel;
+
+          case 'offline':
+            return OfflineLabel;
+
+          default:
+            return null;
+        }
       }
     }
 
-    // Define elements
-    const CustomerLabel = (<Label key='customer' color='teal'>Customer</Label>);
-    const EmployeeLabel = (<Label key='employee' color='yellow'>Employee</Label>);
+    // Define elements to render
 
     const ActiveRoleLabels = getActiveRoleLabels();
     const ActiveStatusLabel = getActiveStatusLabel();
@@ -230,8 +279,21 @@ export default class Header extends Component {
                     { profileContent }
                   </Dropdown.Item>
                   <Dropdown.Divider/>
-                  <Dropdown.Item>Account <Icon name='user' style={floatRightStyles} /></Dropdown.Item>
                   <Dropdown.Item onClick={this.userLogout}>Log Out <Icon name='log out' style={floatRightStyles} /></Dropdown.Item>
+                  <Dropdown.Item >Account <Icon name='user' style={floatRightStyles} /></Dropdown.Item>
+                  <Dropdown.Item>
+                    <Dropdown icon={null} fluid simple>
+                      <>
+                        Set Your Status <Icon name='flag' style={floatRightStyles} />
+                        <Dropdown.Menu>
+                          <Dropdown.Item onClick={() => {this.setUserStatus('online')}}><Label circular color='green' empty /><span>Online</span></Dropdown.Item>
+                          <Dropdown.Item onClick={() => {this.setUserStatus('busy')}}><Label circular color='red' empty /><span>Busy</span></Dropdown.Item>
+                          <Dropdown.Item onClick={() => {this.setUserStatus('on_break')}}><Label circular color='yellow' empty /><span>On Break</span></Dropdown.Item>
+                          <Dropdown.Item onClick={() => {this.setUserStatus('offline')}}><Label circular color='grey' empty /><span>Offline</span></Dropdown.Item>
+                        </Dropdown.Menu>
+                      </>
+                    </Dropdown>
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </>
             </Dropdown>

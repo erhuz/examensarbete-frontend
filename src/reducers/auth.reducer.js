@@ -16,13 +16,13 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         access_token: action.payload
-      };
+      }
 
     case 'REMOVE_ACCESS_TOKEN':
       return {
         ...state,
         access_token: null
-      };
+      }
 
     case 'SET_USER_DATA':
       return {
@@ -49,10 +49,13 @@ const authReducer = (state = initialState, action) => {
       }
 
     case 'UPDATE_USER_STATUS':
-      const newState = state;
-      newState.user.status = action.payload;
-
-      return newState;
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          status: action.payload,
+        }
+      }
 
     default:
       return state;
