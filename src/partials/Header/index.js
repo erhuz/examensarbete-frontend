@@ -3,7 +3,8 @@ import {
   Link
 } from "react-router-dom";
 import { Menu, Dropdown, Label, Image, Icon } from 'semantic-ui-react';
-import { getUserRoles } from 'helpers/user';
+import { getUserRoles, userHasRole } from 'helpers/user';
+import Echo from 'helpers/echo';
 
 
 
@@ -17,6 +18,18 @@ export default class Header extends Component {
 
   componentDidMount() {
     this.userLogin();
+  }
+
+  componentWillUnmount() {
+    const { user } = this.props;
+
+    if(user !== null){
+      if(userHasRole(user, 'employee')){
+        console.log('User unsubscribed to \'orders\' channel');
+
+        Echo.leaveChannel('orders');
+      }
+    }
   }
 
   userLogin = () => {
@@ -46,6 +59,11 @@ export default class Header extends Component {
     })
   }
 
+  userLogout = () => {
+    this.props.REMOVE_ACCESS_TOKEN();
+    this.props.REMOVE_USER_DATA();
+  }
+
   getAndSetUserDataIfAuthenticated = () => {
     const { access_token } = this.props;
 
@@ -58,25 +76,29 @@ export default class Header extends Component {
         }
       })
       .then(res => res.json())
-      .then(json => {
+      .then(user => {
         this.props.SET_USER_DATA({
-          name: json.name,
-          email: json.email,
+          name: user.name,
+          email: user.email,
           img: null,
-          roles: json.roles,
+          roles: user.roles,
+          status: user.status
         });
-        return true;
+
+        if(userHasRole(user, 'employee')){
+          console.log('User subscribed to \'orders\' channel');
+
+          Echo.channel('orders')
+            .listen('OrderStatusUpdated', e => {
+              console.log('The user is an Employee and is allowed to listen to the employee channel');
+              console.log(e); // Log event
+            });
+        }
       })
       .catch(err => {
         console.error(err);
-        return false;
       })
     }
-  }
-
-  userLogout = () => {
-    this.props.REMOVE_ACCESS_TOKEN();
-    this.props.REMOVE_USER_DATA();
   }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -130,7 +152,7 @@ export default class Header extends Component {
       />
     ));
 
-    const getActiveLabels = () => {
+    const getActiveRoleLabels = () => {
       if(this.props.user.name !== null){
         const userRoles = getUserRoles(this.props.user);
         return userRoles.map(role => {
@@ -149,14 +171,22 @@ export default class Header extends Component {
       }
     }
 
+    const getActiveStatusLabel = () => {
+      if(this.props.user.status !== null){
+        return (
+          <Label circular color='green' floating>Online</Label>
+        ); // TMP
+      }
+    }
+
     // Define elements
     const CustomerLabel = (<Label key='customer' color='teal'>Customer</Label>);
-    const EmployeeLabel = (<Label key='employee' color='green'>Employee</Label>);
+    const EmployeeLabel = (<Label key='employee' color='yellow'>Employee</Label>);
 
+    const ActiveRoleLabels = getActiveRoleLabels();
+    const ActiveStatusLabel = getActiveStatusLabel();
 
-    const ActiveLabels = getActiveLabels();
-
-    const testEl = () => {
+    const getMenuContent = () => {
       const { access_token } = this.props;
 
         let profileOrLoginButton = (
@@ -172,7 +202,7 @@ export default class Header extends Component {
         const profileContent = (
           <>
             <div>
-              { ActiveLabels }
+              { ActiveRoleLabels }
             </div>
             <div style={marginTopStyles}>
               <Image src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=120&q=80' avatar />
@@ -193,14 +223,17 @@ export default class Header extends Component {
               item
               simple
             >
-              <Dropdown.Menu>
-                <Dropdown.Item>
-                  { profileContent }
-                </Dropdown.Item>
-                <Dropdown.Divider/>
-                <Dropdown.Item>Account <Icon name='user' style={floatRightStyles} /></Dropdown.Item>
-                <Dropdown.Item onClick={this.userLogout}>Log Out <Icon name='log out' style={floatRightStyles} /></Dropdown.Item>
-              </Dropdown.Menu>
+              <>
+                { ActiveStatusLabel }
+                <Dropdown.Menu>
+                  <Dropdown.Item>
+                    { profileContent }
+                  </Dropdown.Item>
+                  <Dropdown.Divider/>
+                  <Dropdown.Item>Account <Icon name='user' style={floatRightStyles} /></Dropdown.Item>
+                  <Dropdown.Item onClick={this.userLogout}>Log Out <Icon name='log out' style={floatRightStyles} /></Dropdown.Item>
+                </Dropdown.Menu>
+              </>
             </Dropdown>
           )
         }
@@ -214,10 +247,12 @@ export default class Header extends Component {
         );
     }
 
+    const MenuContent = getMenuContent();
+
     // Move logic out of render function with the help of this.props
     return (
       <Menu>
-        {testEl()}
+        { MenuContent }
       </Menu>
     )
   }
