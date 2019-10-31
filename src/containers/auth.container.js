@@ -4,7 +4,8 @@ import {
   SET_ACCESS_TOKEN,
   REMOVE_ACCESS_TOKEN,
   SET_USER_DATA,
-  REMOVE_USER_DATA
+  REMOVE_USER_DATA,
+  UPDATE_USER_STATUS,
 } from 'actions/auth.actions';
 
 const mapStateToProps = ({authReducer}) => {
@@ -24,6 +25,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     REMOVE_USER_DATA: () => {
       dispatch(REMOVE_USER_DATA());
+    },
+    UPDATE_USER_STATUS: (user_status) => {
+      dispatch(UPDATE_USER_STATUS());
     }
   }
 }
