@@ -104,7 +104,6 @@ export default class Header extends Component {
 
   setUserStatus = (status) => {
     const { access_token } = this.props;
-    console.log('user status changed to: ' + status);
 
     const statusForm = new FormData();
     statusForm.append('status', status);
@@ -203,7 +202,6 @@ export default class Header extends Component {
     const getActiveStatusLabel = () => {
       if(this.props.user.status !== null){
         const { status } = this.props.user;
-        console.log(status);
 
         const OnlineLabel = (<Label circular color='green' floating>Online</Label>);
         const BusyLabel = (<Label circular color='red' floating>Busy</Label>);
