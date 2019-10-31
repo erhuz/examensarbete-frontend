@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(REMOVE_USER_DATA());
     },
     UPDATE_USER_STATUS: (user_status) => {
-      dispatch(UPDATE_USER_STATUS());
+      dispatch(UPDATE_USER_STATUS(user_status));
     }
   }
 }
