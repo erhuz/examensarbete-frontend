@@ -27,3 +27,11 @@ export const REMOVE_USER_DATA = () =>{
     type: 'REMOVE_USER_DATA'
   }
 };
+
+// Update the authentants status
+export const UPDATE_USER_STATUS = (user_status) =>{
+  return {
+    type: 'UPDATE_USER_STATUS',
+    payload: user_status
+  }
+};

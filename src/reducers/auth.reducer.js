@@ -5,6 +5,7 @@ const initialState = {
     name: null,
     email: null,
     roles: null,
+    status: null,
   }
 }
 
@@ -31,6 +32,7 @@ const authReducer = (state = initialState, action) => {
           name: action.payload.name,
           email: action.payload.email,
           roles: action.payload.roles,
+          status: action.payload.status,
         }
       }
 
@@ -42,12 +44,17 @@ const authReducer = (state = initialState, action) => {
           name: null,
           email: null,
           roles: null,
+          status: null,
         }
       }
 
+    case 'UPDATE_USER_STATUS':
+      const newState = state;
+      newState.user.status = action.payload;
+
+      return newState;
+
     default:
-      // throw new Error('Unknown action: ' + action.type);
-      // Potential permanent fix for compiling
       return state;
   }
 }
