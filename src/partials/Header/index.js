@@ -62,7 +62,7 @@ export default class Header extends Component {
   userLogout = () => {
     this.props.REMOVE_ACCESS_TOKEN();
     this.props.REMOVE_USER_DATA();
-    this.setUserStatus('offline');
+    this.setUserStatusWithFetch('offline');
   }
 
   getAndSetUserDataIfAuthenticated = () => {
@@ -87,12 +87,13 @@ export default class Header extends Component {
 
           Echo.private('App.User.3')
             .listen('CallRequested', event => {
-              console.log('Message recieved on private-channel');
+              console.log('Incoming Call:');
               console.log(event);
             })
             .listen('UserStatusUpdated', event => {
               console.log('Your status was updated!');
               console.log(event);
+              this.setUserStatus(event.status);
             })
 
         }
@@ -103,7 +104,7 @@ export default class Header extends Component {
     }
   }
 
-  setUserStatus = (status) => {
+  setUserStatusWithFetch = (status) => {
     const { access_token } = this.props;
 
     const statusForm = new FormData();
@@ -119,11 +120,15 @@ export default class Header extends Component {
     })
     .then(res => res.json())
     .then(json => {
-      this.props.UPDATE_USER_STATUS(json.status);
+      this.setUserStatus(json.status);
     })
     .catch(err => {
       console.error(err);
     });
+  }
+
+  setUserStatus = (status) => {
+    this.props.UPDATE_USER_STATUS(status);
   }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -285,10 +290,10 @@ export default class Header extends Component {
                       <>
                         Set Your Status <Icon name='flag' style={floatRightStyles} />
                         <Dropdown.Menu>
-                          <Dropdown.Item onClick={() => {this.setUserStatus('online')}}><Label circular color='green' empty /><span>Online</span></Dropdown.Item>
-                          <Dropdown.Item onClick={() => {this.setUserStatus('busy')}}><Label circular color='red' empty /><span>Busy</span></Dropdown.Item>
-                          <Dropdown.Item onClick={() => {this.setUserStatus('on_break')}}><Label circular color='yellow' empty /><span>On Break</span></Dropdown.Item>
-                          <Dropdown.Item onClick={() => {this.setUserStatus('offline')}}><Label circular color='grey' empty /><span>Offline</span></Dropdown.Item>
+                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('online')}}><Label circular color='green' empty /><span>Online</span></Dropdown.Item>
+                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('busy')}}><Label circular color='red' empty /><span>Busy</span></Dropdown.Item>
+                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('on_break')}}><Label circular color='yellow' empty /><span>On Break</span></Dropdown.Item>
+                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('offline')}}><Label circular color='grey' empty /><span>Offline</span></Dropdown.Item>
                         </Dropdown.Menu>
                       </>
                     </Dropdown>
