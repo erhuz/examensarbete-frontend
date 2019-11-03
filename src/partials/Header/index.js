@@ -4,9 +4,7 @@ import {
 } from "react-router-dom";
 import { Menu, Dropdown, Label, Image, Icon } from 'semantic-ui-react';
 import { getUserRoles, userHasRole } from 'helpers/user';
-import Echo from 'helpers/echo';
-
-
+import echoHelper from 'helpers/echo';
 
 export default class Header extends Component {
   constructor(props){
@@ -26,6 +24,8 @@ export default class Header extends Component {
     if(user !== null){
       if(userHasRole(user, 'employee')){
         console.log('User unsubscribed to \'orders\' channel');
+
+        const Echo = echoHelper(this.props.access_token)
 
         Echo.leaveChannel('orders');
       }
@@ -89,11 +89,18 @@ export default class Header extends Component {
         if(userHasRole(user, 'employee')){
           console.log('User subscribed to \'orders\' channel');
 
-          Echo.channel('orders')
-            .listen('OrderStatusUpdated', e => {
-              console.log('The user is an Employee and is allowed to listen to the employee channel');
-              console.log(e); // Log event
-            });
+          const Echo = echoHelper(this.props.access_token);
+
+          Echo.private('App.User.3')
+            .listen('CallRequested', event => {
+              console.log('Message recieved on private-channel');
+              console.log(event);
+            })
+            .listen('UserStatusUpdated', event => {
+              console.log('Your status was updated!');
+              console.log(event);
+            })
+
         }
       })
       .catch(err => {
