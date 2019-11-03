@@ -78,13 +78,7 @@ export default class Header extends Component {
       })
       .then(res => res.json())
       .then(user => {
-        this.props.SET_USER_DATA({
-          name: user.name,
-          email: user.email,
-          img: null,
-          roles: user.roles,
-          status: user.status
-        });
+        this.props.SET_USER_DATA(user);
 
         if(userHasRole(user, 'employee')){
           console.log('User subscribed to \'orders\' channel');
