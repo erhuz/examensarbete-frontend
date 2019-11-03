@@ -2,6 +2,7 @@ const initialState = {
   access_token: null,
   user: {
     profile_picture: null,
+    id: null,
     name: null,
     email: null,
     roles: null,
@@ -29,6 +30,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         user: {
           profile_picture: action.payload.profile_picture,
+          id: action.payload.id,
           name: action.payload.name,
           email: action.payload.email,
           roles: action.payload.roles,
