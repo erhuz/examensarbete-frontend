@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Call from 'components/Call';
+import Call from 'components/EmployeeCall';
 import {
   SET_CURRENT_CALL,
   UPDATE_CURRENT_CALL,

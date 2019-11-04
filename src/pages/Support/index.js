@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from 'layouts/Default';
-import Call from 'containers/call.container';
+import Call from 'containers/customerCall.container';
 
 
 function Support() {
