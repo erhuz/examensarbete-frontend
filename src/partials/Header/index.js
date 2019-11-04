@@ -10,6 +10,7 @@ export default class Header extends Component {
     super(props);
 
     this.state = {
+      subscribeToWebsockets: false,
       incomingCall: false,
       waitingOnCall: false,
       call: null,
@@ -34,12 +35,19 @@ export default class Header extends Component {
     this.props.REMOVE_ACCESS_TOKEN();
     this.props.REMOVE_USER_DATA();
     this.setUserStatusWithFetch('offline');
+    // Uncomment line below when user unsubscribes from channels on logout
+    // this.setState({ subscribeToWebsockets: false });
   }
 
   subscribeToWebsockets = () => {
-    if(this.props.user.name !== null){
+    if(
+      this.props.user.name !== null &&
+      this.state.subscribeToWebsockets === false
+    ){
       const user = this.props.user;
       const Echo = echoHelper(this.props.access_token);
+
+      this.setState({ subscribeToWebsockets: true });
 
       if(userHasRole(user, 'employee')){
         console.log('User subscribed to \'orders\' channel');
@@ -60,7 +68,6 @@ export default class Header extends Component {
           .listen('CallAccepted', event => {
 
           });
-
       }
     }
   }
@@ -151,7 +158,7 @@ export default class Header extends Component {
       return item
     });
 
-    const menuItems = completeItemsData.map(item => (
+    const MenuItems = completeItemsData.map(item => (
       <Menu.Item
         as={Link}
         to={item.href}
@@ -223,18 +230,9 @@ export default class Header extends Component {
     const getMenuContent = () => {
       const { access_token } = this.props;
 
-        let profileOrLoginButton = (
-          <Menu.Item
-            position='right'
-            name='login'
-            active={activeItem === 'login'}
-            onClick={this.userLogin}
-            content='Log In'
-          />
-        )
 
-        const profileContent = (
-          <>
+      const profileContent = (
+        <>
             <div>
               { ActiveRoleLabels }
             </div>
@@ -254,7 +252,7 @@ export default class Header extends Component {
           this.props.user !== null &&
           this.props.user.roles !== null &&
           userHasRole(this.props.user, 'employee')
-        ){
+          ){
           StatusSelection = (
             <Dropdown.Item>
               <Dropdown icon={null} fluid simple>
@@ -274,14 +272,16 @@ export default class Header extends Component {
           ActiveStatusLabel = null;
         }
 
+
+        let ProfileButton;
         if(access_token !== null){
-          profileOrLoginButton = (
+          ProfileButton = (
             <Dropdown
-              as={Menu.Item}
-              position='right'
-              text={this.props.user.name}
-              item
-              simple
+            as={Menu.Item}
+            position='right'
+            text={this.props.user.name}
+            item
+            simple
             >
               <>
                 { ActiveStatusLabel }
@@ -302,8 +302,8 @@ export default class Header extends Component {
 
         return(
             <>
-              { menuItems }
-              { profileOrLoginButton }
+              { MenuItems }
+              { ProfileButton }
             </>
         );
     }
