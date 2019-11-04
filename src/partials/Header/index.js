@@ -66,7 +66,7 @@ export default class Header extends Component {
       } else {
         Echo.private('App.User.' + this.props.user.id)
           .listen('CallAccepted', event => {
-
+            console.log('Your Call Has Been Accepted');
           });
       }
     }
