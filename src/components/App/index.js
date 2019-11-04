@@ -7,7 +7,7 @@ import {
 import { ReactReduxContext } from 'react-redux';
 import { Container } from 'semantic-ui-react';
 
-import Header from 'containers/auth.container';
+import Header from 'containers/header.container';
 import Footer from 'partials/Footer';
 
 import Index from 'pages/Index';
