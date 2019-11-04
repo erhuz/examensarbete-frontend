@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { createSession, OTPublisher, OTSubscriber } from 'opentok-react';
 import { Button } from 'semantic-ui-react';
 
 class Call extends Component {
@@ -6,33 +7,50 @@ class Call extends Component {
   constructor(props){
     super(props);
 
-    this.state = {};
+    this.state = { streams: [] };
   }
 
-  requestCall = () => {
-    const { access_token } = this.props.authReducer;
-    console.log('Requested call');
+  componentWillMount() {
+    if(this.props.callReducer.call !== null) {
+      this.sessionHelper = createSession({
+        apiKey: 'your-api-key',
+        sessionId: 'your-session-id',
+        token: 'your-session-token',
+        onStreamsUpdated: streams => { this.setState({ streams }); }
+      });
+    }
+  }
 
-    fetch(process.env.REACT_APP_BACKEND_REST_API + '/call/request', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${access_token}`,
-      },
-    })
-    .then(res => res.json())
-    .then(json => {
-      console.log(json);
-    })
-    .catch(error => {
-      console.error(error);
-    });
+  componentWillUnmount() {
+    this.sessionHelper.disconnect();
   }
 
   render() {
+
+    console.log(this.props);
+
+
+    if(this.props.callReducer.call === null){
+      return (
+        <div>
+          Waiting for a call...
+        </div>
+      );
+    }
+
     return (
       <div>
-        <Button onClick={this.requestCall}> Request A Call </Button>
+        <OTPublisher session={this.sessionHelper.session} />
+
+        {this.state.streams.map(stream => {
+          return (
+            <OTSubscriber
+              key={stream.id}
+              session={this.sessionHelper.session}
+              stream={stream}
+            />
+          );
+        })}
       </div>
     );
   }
