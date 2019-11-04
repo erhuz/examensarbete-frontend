@@ -16,10 +16,6 @@ export default class Header extends Component {
     }
   }
 
-  componentDidMount() {
-    this.userLogin();
-  }
-
   componentWillUnmount() {
     const { user } = this.props;
 
@@ -34,76 +30,38 @@ export default class Header extends Component {
     }
   }
 
-  userLogin = () => {
-    const userForm = new FormData();
-    // userForm.append('name', 'John Doe');
-    userForm.append('email', 'employee@example.com');
-    userForm.append('password', 'pass1234');
-    // userForm.append('password_confirmation', 'pass1234');
-
-    fetch(process.env.REACT_APP_BACKEND_REST_API + '/login', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        ContentType: 'multipart/form-data',
-      },
-      body: userForm,
-    })
-    .then(res => res.json())
-    .then(json => {
-      this.props.SET_ACCESS_TOKEN(json.token);
-
-      this.getAndSetUserDataIfAuthenticated();
-    })
-    .catch(err => {
-      console.error('Error Recieved: ' + err);
-
-    })
-  }
-
   userLogout = () => {
     this.props.REMOVE_ACCESS_TOKEN();
     this.props.REMOVE_USER_DATA();
     this.setUserStatusWithFetch('offline');
   }
 
-  getAndSetUserDataIfAuthenticated = () => {
-    const { access_token } = this.props;
+  subscribeToWebsockets = () => {
+    if(this.props.user.name !== null){
+      const user = this.props.user;
+      const Echo = echoHelper(this.props.access_token);
 
-    if(access_token !== null){
-      fetch(process.env.REACT_APP_BACKEND_REST_API + '/user', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${access_token}`,
-        }
-      })
-      .then(res => res.json())
-      .then(user => {
-        this.props.SET_USER_DATA(user);
+      if(userHasRole(user, 'employee')){
+        console.log('User subscribed to \'orders\' channel');
 
-        if(userHasRole(user, 'employee')){
-          console.log('User subscribed to \'orders\' channel');
+        Echo.private('App.User.' + this.props.user.id)
+          .listen('CallRequested', event => {
+            console.log('Incoming Call:');
+            console.log(event);
+            this.setState({ incomingCall: true, call: event.call });
+          })
+          .listen('UserStatusUpdated', event => {
+            console.log('Your status was updated!');
+            console.log(event);
+            this.setUserStatus(event.status);
+          })
+      } else {
+        Echo.private('App.User.' + this.props.user.id)
+          .listen('CallAccepted', event => {
 
-          const Echo = echoHelper(this.props.access_token);
+          });
 
-          Echo.private('App.User.' + this.props.user.id)
-            .listen('CallRequested', event => {
-              console.log('Incoming Call:');
-              console.log(event);
-              this.setState({ incomingCall: true, call: event.call });
-            })
-            .listen('UserStatusUpdated', event => {
-              console.log('Your status was updated!');
-              console.log(event);
-              this.setUserStatus(event.status);
-            })
-
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      })
+      }
     }
   }
 
@@ -159,6 +117,9 @@ export default class Header extends Component {
     // INLINE STYLES
     const marginTopStyles = { marginTop: 14 };
     const floatRightStyles = { float: 'right' };
+
+    // Subscribe to websockets
+    this.subscribeToWebsockets();
 
     // Create Menu items
     let itemsData = [
