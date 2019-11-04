@@ -64,6 +64,14 @@ export default class LoginForm extends Component {
   render() {
     // const { email, password } = this.state;
 
+    if(this.props.user.name !== null){
+      return (
+        <Segment>
+          <h3>You are now logged in!</h3>
+        </Segment>
+      );
+    }
+
     return (
       <Segment>
         <h3> Login </h3>
