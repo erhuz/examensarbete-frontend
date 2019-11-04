@@ -24,8 +24,8 @@ export default class LoginForm extends Component {
 
       this.getAndSetUserDataIfAuthenticated();
     })
-    .catch(err => {
-      console.error('Error Recieved: ' + err);
+    .catch(error => {
+      console.error(error);
 
     })
   }
@@ -45,8 +45,8 @@ export default class LoginForm extends Component {
       .then(user => {
         this.props.SET_USER_DATA(user);
       })
-      .catch(err => {
-        console.error(err);
+      .catch(error => {
+        console.error(error);
       })
     }
   }
