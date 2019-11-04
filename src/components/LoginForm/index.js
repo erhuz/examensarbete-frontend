@@ -55,10 +55,7 @@ export default class LoginForm extends Component {
 
   handleSubmit = () => {
     const {email, password} = this.state;
-
     this.userLogin(email, password);
-    console.log('submitted with data:');
-    console.log({email, password});
   }
 
   render() {

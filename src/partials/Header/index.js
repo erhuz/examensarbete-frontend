@@ -22,8 +22,6 @@ export default class Header extends Component {
 
     if(user !== null){
       if(userHasRole(user, 'employee')){
-        console.log('User unsubscribed to \'orders\' channel');
-
         const Echo = echoHelper(this.props.access_token)
 
         Echo.leaveChannel('orders');
@@ -50,7 +48,7 @@ export default class Header extends Component {
       this.setState({ subscribeToWebsockets: true });
 
       if(userHasRole(user, 'employee')){
-        console.log('User subscribed to \'orders\' channel');
+        console.log('User subscribed to individual channel');
 
         Echo.private('App.User.' + this.props.user.id)
           .listen('CallRequested', event => {
@@ -59,8 +57,6 @@ export default class Header extends Component {
             this.setState({ incomingCall: true, call: event.call });
           })
           .listen('UserStatusUpdated', event => {
-            console.log('Your status was updated!');
-            console.log(event);
             this.setUserStatus(event.status);
           })
       } else {

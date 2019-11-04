@@ -10,8 +10,6 @@ class Call extends Component {
   }
 
   requestCall = () => {
-    console.log(this.props);
-
     const { access_token } = this.props.authReducer;
     console.log('Requested call');
 
@@ -32,8 +30,6 @@ class Call extends Component {
   }
 
   render() {
-    console.log(this.props);
-
     return (
       <div>
         <Button onClick={this.requestCall}> Request A Call </Button>
