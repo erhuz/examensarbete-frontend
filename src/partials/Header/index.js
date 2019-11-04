@@ -10,7 +10,7 @@ export default class Header extends Component {
     super(props);
 
     this.state = {
-      subscribeToWebsockets: false,
+      subscribedToWebsockets: false,
       incomingCall: false,
       waitingOnCall: false,
       call: null,
@@ -40,12 +40,12 @@ export default class Header extends Component {
   subscribeToWebsockets = () => {
     if(
       this.props.user.name !== null &&
-      this.state.subscribeToWebsockets === false
+      this.state.subscribedToWebsockets === false
     ){
       const user = this.props.user;
       const Echo = echoHelper(this.props.access_token);
 
-      this.setState({ subscribeToWebsockets: true });
+      this.setState({ subscribedToWebsockets: true });
 
       if(userHasRole(user, 'employee')){
         console.log('User subscribed to individual channel');
