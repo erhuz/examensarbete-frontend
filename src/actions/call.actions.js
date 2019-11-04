@@ -8,7 +8,7 @@ export const SET_CURRENT_CALL = (call) => {
 
 export const UPDATE_CURRENT_CALL = (call) => {
   return {
-    type: 'SET_CURRENT_CALL',
+    type: 'UPDATE_CURRENT_CALL',
     payload: call,
   }
 };
