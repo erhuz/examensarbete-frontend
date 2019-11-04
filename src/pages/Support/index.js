@@ -1,10 +1,12 @@
 import React from 'react';
 import Layout from 'layouts/Default';
+import Call from 'containers/call.container';
+
 
 function Support() {
   return (
     <Layout>
-      Support
+      <Call />
     </Layout>
   );
 }
