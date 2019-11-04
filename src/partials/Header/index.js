@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import {
-  Link
-} from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { Menu, Dropdown, Label, Image, Icon } from 'semantic-ui-react';
+import AcceptCallModal from 'components/AcceptCallModal';
 import { getUserRoles, userHasRole } from 'helpers/user';
 import echoHelper from 'helpers/echo';
 
@@ -11,6 +10,9 @@ export default class Header extends Component {
     super(props);
 
     this.state = {
+      incomingCall: false,
+      waitingOnCall: false,
+      call: null,
     }
   }
 
@@ -34,10 +36,10 @@ export default class Header extends Component {
 
   userLogin = () => {
     const userForm = new FormData();
-    userForm.append('name', 'John Doe');
-    userForm.append('email', 'john.doe@example.com');
+    // userForm.append('name', 'John Doe');
+    userForm.append('email', 'employee@example.com');
     userForm.append('password', 'pass1234');
-    userForm.append('password_confirmation', 'pass1234');
+    // userForm.append('password_confirmation', 'pass1234');
 
     fetch(process.env.REACT_APP_BACKEND_REST_API + '/login', {
       method: 'POST',
@@ -85,10 +87,11 @@ export default class Header extends Component {
 
           const Echo = echoHelper(this.props.access_token);
 
-          Echo.private('App.User.3')
+          Echo.private('App.User.' + this.props.user.id)
             .listen('CallRequested', event => {
               console.log('Incoming Call:');
               console.log(event);
+              this.setState({ incomingCall: true, call: event.call });
             })
             .listen('UserStatusUpdated', event => {
               console.log('Your status was updated!');
@@ -132,6 +135,23 @@ export default class Header extends Component {
   }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+  handleAcceptedCall = () => {
+    this.setState({ waitingOnCall: true });
+    const { access_token } = this.props;
+
+    fetch(process.env.REACT_APP_BACKEND_REST_API + '/call/accept/' + this.state.call.id, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+    .then(res => res.json())
+    .then(json => {
+      this.setState({ waitingOnCall: false, incomingCall: false });
+    })
+    .catch(err => {console.error(err)});
+  }
 
   render() {
     const { activeItem } = this.state
@@ -188,7 +208,7 @@ export default class Header extends Component {
 
         // Define elements
         const CustomerLabel = (<Label key='customer' color='teal'>Customer</Label>);
-        const EmployeeLabel = (<Label key='employee' color='yellow'>Employee</Label>);
+        const EmployeeLabel = (<Label key='employee' color='blue'>Employee</Label>);
 
         return userRoles.map(role => {
           switch (role) {
@@ -237,7 +257,7 @@ export default class Header extends Component {
     // Define elements to render
 
     const ActiveRoleLabels = getActiveRoleLabels();
-    const ActiveStatusLabel = getActiveStatusLabel();
+    let ActiveStatusLabel = getActiveStatusLabel();
 
     const getMenuContent = () => {
       const { access_token } = this.props;
@@ -267,6 +287,32 @@ export default class Header extends Component {
           </>
         )
 
+        let StatusSelection = null;
+
+        if(
+          this.props.user !== null &&
+          this.props.user.roles !== null &&
+          userHasRole(this.props.user, 'employee')
+        ){
+          StatusSelection = (
+            <Dropdown.Item>
+              <Dropdown icon={null} fluid simple>
+                <>
+                  Set Your Status <Icon name='flag' style={floatRightStyles} />
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('online')}}><Label circular color='green' empty /><span>Online</span></Dropdown.Item>
+                    <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('busy')}}><Label circular color='red' empty /><span>Busy</span></Dropdown.Item>
+                    <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('on_break')}}><Label circular color='yellow' empty /><span>On Break</span></Dropdown.Item>
+                    <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('offline')}}><Label circular color='grey' empty /><span>Offline</span></Dropdown.Item>
+                  </Dropdown.Menu>
+                </>
+              </Dropdown>
+            </Dropdown.Item>
+          );
+        } else {
+          ActiveStatusLabel = null;
+        }
+
         if(access_token !== null){
           profileOrLoginButton = (
             <Dropdown
@@ -285,19 +331,7 @@ export default class Header extends Component {
                   <Dropdown.Divider/>
                   <Dropdown.Item onClick={this.userLogout}>Log Out <Icon name='log out' style={floatRightStyles} /></Dropdown.Item>
                   <Dropdown.Item >Account <Icon name='user' style={floatRightStyles} /></Dropdown.Item>
-                  <Dropdown.Item>
-                    <Dropdown icon={null} fluid simple>
-                      <>
-                        Set Your Status <Icon name='flag' style={floatRightStyles} />
-                        <Dropdown.Menu>
-                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('online')}}><Label circular color='green' empty /><span>Online</span></Dropdown.Item>
-                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('busy')}}><Label circular color='red' empty /><span>Busy</span></Dropdown.Item>
-                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('on_break')}}><Label circular color='yellow' empty /><span>On Break</span></Dropdown.Item>
-                          <Dropdown.Item onClick={() => {this.setUserStatusWithFetch('offline')}}><Label circular color='grey' empty /><span>Offline</span></Dropdown.Item>
-                        </Dropdown.Menu>
-                      </>
-                    </Dropdown>
-                  </Dropdown.Item>
+                  { StatusSelection }
                 </Dropdown.Menu>
               </>
             </Dropdown>
@@ -317,9 +351,16 @@ export default class Header extends Component {
 
     // Move logic out of render function with the help of this.props
     return (
-      <Menu>
-        { MenuContent }
-      </Menu>
+      <>
+        <Menu>
+          { MenuContent }
+        </Menu>
+        <AcceptCallModal
+          open={this.state.incomingCall}
+          isLoading={this.state.waitingOnCall}
+          handleAcceptedCall={() => { this.handleAcceptedCall() }}
+        />
+      </>
     )
   }
 }
