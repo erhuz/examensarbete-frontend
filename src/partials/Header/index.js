@@ -65,6 +65,7 @@ export default class Header extends Component {
             console.log('Your Call Has Been Accepted');
             console.log(event);
 
+            // Do something with the event
           });
       }
     }
