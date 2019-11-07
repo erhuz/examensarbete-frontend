@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Call from 'components/CustomerCall';
+import Call from 'components/CustomerCallContainer';
 import {
   SET_CURRENT_CALL,
   UPDATE_CURRENT_CALL,
