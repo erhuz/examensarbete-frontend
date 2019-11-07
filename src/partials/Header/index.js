@@ -59,12 +59,20 @@ export default class Header extends Component {
           .listen('UserStatusUpdated', event => {
             this.setUserStatus(event.status);
           })
+          .listen('CallInitialized', event => {
+            console.log('Call Initialized:');
+            console.log(event);
+          });
       } else {
         Echo.private('App.User.' + this.props.user.id)
           .listen('CallAccepted', event => {
             console.log('Your Call Has Been Accepted');
             console.log(event);
 
+          })
+          .listen('CallInitialized', event => {
+            console.log('Call Initialized:');
+            console.log(event);
           });
       }
     }
