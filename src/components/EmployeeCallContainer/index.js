@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { createSession, OTPublisher, OTSubscriber } from 'opentok-react';
 import { Button } from 'semantic-ui-react';
 
-class Call extends Component {
+class EmployeeCallContainer extends Component {
 
   constructor(props){
     super(props);
@@ -56,4 +56,4 @@ class Call extends Component {
   }
 }
 
-export default Call;
+export default EmployeeCallContainer;
