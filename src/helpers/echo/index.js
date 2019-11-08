@@ -12,7 +12,7 @@ const echoHelper = (access_token) => {
     cluster: 'eu',
     forceTLS: true,
     encrypted: false,
-    authEndpoint: 'http://vcs-backend.test/broadcasting/auth',
+    authEndpoint: process.env.REACT_APP_BROADCASATING_ENDPOINT,
     auth: {
       headers: {
         Accept: 'Application/json',
