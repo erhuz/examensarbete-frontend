@@ -1,56 +1,33 @@
 import React, { Component } from 'react';
 import { createSession, OTPublisher, OTSubscriber } from 'opentok-react';
 import { Button } from 'semantic-ui-react';
+import Call from 'components/Call';
 
 class EmployeeCallContainer extends Component {
 
   constructor(props){
     super(props);
 
-    this.state = { streams: [] };
-  }
-
-  componentWillMount() {
-    if(this.props.callReducer.call !== null) {
-      this.sessionHelper = createSession({
-        apiKey: 'your-api-key',
-        sessionId: 'your-session-id',
-        token: 'your-session-token',
-        onStreamsUpdated: streams => { this.setState({ streams }); }
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    this.sessionHelper.disconnect();
+    this.state = {};
   }
 
   render() {
 
-    console.log(this.props);
-
-
-    if(this.props.callReducer.call === null){
+    if(this.props.callReducer.call !== null){
       return (
         <div>
-          Waiting for a call...
+          <Call
+            apiKey={process.env.REACT_APP_OPENTOK_KEY}
+            sessionId={this.props.callReducer.call.session_id}
+            sessionToken={this.props.callReducer.call.recipient_token}
+          />
         </div>
       );
     }
 
     return (
       <div>
-        <OTPublisher session={this.sessionHelper.session} />
-
-        {this.state.streams.map(stream => {
-          return (
-            <OTSubscriber
-              key={stream.id}
-              session={this.sessionHelper.session}
-              stream={stream}
-            />
-          );
-        })}
+        Waiting for a call...
       </div>
     );
   }
