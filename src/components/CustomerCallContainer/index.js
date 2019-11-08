@@ -32,6 +32,8 @@ class Call extends Component {
 
   render() {
 
+    return(
+      null
     );
   }
 }
