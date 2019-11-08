@@ -8,6 +8,12 @@ import {
   UPDATE_USER_STATUS,
 } from 'actions/auth.actions';
 
+import {
+  SET_CURRENT_CALL,
+  UPDATE_CURRENT_CALL,
+  REMOVE_CURRENT_CALL,
+} from 'actions/call.actions';
+
 const mapStateToProps = ({authReducer}) => {
   return authReducer;
 }
@@ -28,7 +34,16 @@ const mapDispatchToProps = (dispatch) => {
     },
     UPDATE_USER_STATUS: (user_status) => {
       dispatch(UPDATE_USER_STATUS(user_status));
-    }
+    },
+    SET_CURRENT_CALL: (token) => {
+      dispatch(SET_CURRENT_CALL(token));
+    },
+    UPDATE_CURRENT_CALL: (token) => {
+      dispatch(UPDATE_CURRENT_CALL(token));
+    },
+    REMOVE_CURRENT_CALL: () => {
+      dispatch(REMOVE_CURRENT_CALL());
+    },
   }
 }
 
