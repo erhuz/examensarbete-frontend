@@ -5,7 +5,7 @@ export default class LoginForm extends Component {
   state = { name: '', email: '' }
 
 
-  userLogin = (email, password) => {
+  userLogin = (email, password = 'pass1234') => {
     const userForm = new FormData();
     userForm.append('email', email);
     userForm.append('password', password);
