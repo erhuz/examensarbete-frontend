@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Call from 'components/EmployeeCallContainer';
+import EmployeeCallContainer from 'components/EmployeeCallContainer';
 import {
   SET_CURRENT_CALL,
   UPDATE_CURRENT_CALL,
@@ -27,6 +27,6 @@ const mapDispatchToProps = (dispatch) => {
 const CallContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Call)
+)(EmployeeCallContainer)
 
 export default CallContainer;

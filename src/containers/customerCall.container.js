@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Call from 'components/CustomerCallContainer';
+import CustomerCallContainer from 'components/CustomerCallContainer';
 import {
   SET_CURRENT_CALL,
   UPDATE_CURRENT_CALL,
@@ -12,11 +12,11 @@ const mapStateToProps = ({callReducer, authReducer}) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    SET_CURRENT_CALL: (token) => {
-      dispatch(SET_CURRENT_CALL(token));
+    SET_CURRENT_CALL: (call) => {
+      dispatch(SET_CURRENT_CALL(call));
     },
-    UPDATE_CURRENT_CALL: (token) => {
-      dispatch(UPDATE_CURRENT_CALL(token));
+    UPDATE_CURRENT_CALL: (call) => {
+      dispatch(UPDATE_CURRENT_CALL(call));
     },
     REMOVE_CURRENT_CALL: () => {
       dispatch(REMOVE_CURRENT_CALL());
@@ -27,6 +27,6 @@ const mapDispatchToProps = (dispatch) => {
 const CallContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Call)
+)(CustomerCallContainer)
 
 export default CallContainer;
