@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
+import Call from 'components/Call';
 
 class CustomerCallContainer extends Component {
 
@@ -30,9 +31,25 @@ class CustomerCallContainer extends Component {
   }
 
   render() {
+    console.log(this.props.callReducer.call !== null);
+    console.log(this.props.callReducer.call);
+
+      if(this.props.callReducer.call !== null){
+        return (
+          <div>
+            <Call
+              apiKey={process.env.REACT_APP_OPENTOK_KEY}
+              sessionId={this.props.callReducer.call.session_id}
+              sessionToken={this.props.callReducer.call.caller_token}
+            />
+          </div>
+          );
+        }
 
     return(
-      null
+      <div>
+        <Button onClick={this.requestCall}>Request a Support Call</Button>
+      </div>
     );
   }
 }
