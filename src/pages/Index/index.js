@@ -5,7 +5,6 @@ import LoginForm from 'containers/login.container';
 function Index() {
   return (
     <Layout>
-      Home
       <LoginForm/>
     </Layout>
   );
