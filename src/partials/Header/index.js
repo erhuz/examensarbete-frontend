@@ -61,7 +61,8 @@ export default class Header extends Component {
           })
           .listen('CallInitialized', event => {
             console.log('Call Initialized:');
-            console.log(event);
+
+            this.props.SET_CURRENT_CALL(event.call);
           });
       } else {
         Echo.private('App.User.' + this.props.user.id)
