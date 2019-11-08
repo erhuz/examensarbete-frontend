@@ -79,7 +79,7 @@ export default class LoginForm extends Component {
               id='form-subcomponent-shorthand-input-email'
               name='email'
               label='Email'
-              placeholder='First name'
+              placeholder='john.doe@example.com'
               onChange={this.handleChange}
             />
             <Form.Input
