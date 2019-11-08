@@ -11,6 +11,10 @@ class EmployeeCallContainer extends Component {
     this.state = {};
   }
 
+  HangUp = () => {
+    this.props.REMOVE_CURRENT_CALL();
+  }
+
   render() {
 
     if(this.props.callReducer.call !== null){
@@ -21,6 +25,7 @@ class EmployeeCallContainer extends Component {
             sessionId={this.props.callReducer.call.session_id}
             sessionToken={this.props.callReducer.call.recipient_token}
           />
+          <Button>Hang Up</Button>
         </div>
       );
     }
