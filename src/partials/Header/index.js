@@ -34,7 +34,7 @@ export default class Header extends Component {
     this.props.REMOVE_USER_DATA();
     this.setUserStatusWithFetch('offline');
     // Uncomment line below when user unsubscribes from channels on logout
-    // this.setState({ subscribeToWebsockets: false });
+    // this.setState({ subscribedToWebsockets: false });
   }
 
   subscribeToWebsockets = () => {
@@ -67,12 +67,11 @@ export default class Header extends Component {
         Echo.private('App.User.' + this.props.user.id)
           .listen('CallAccepted', event => {
             console.log('Your Call Has Been Accepted');
-            console.log(event);
-
           })
           .listen('CallInitialized', event => {
-            console.log('Call Initialized:');
-            console.log(event);
+            console.log('Call Initialized');
+
+            this.props.SET_CURRENT_CALL(event.call);
           });
       }
     }
