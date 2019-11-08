@@ -32,30 +32,6 @@ class Call extends Component {
 
   render() {
 
-
-    if(this.props.callReducer.call === null) {
-      return (
-        <div>
-          <Button onClick={this.requestCall}> Request A Call </Button>
-        </div>
-      );
-    }
-
-
-    return (
-      <div>
-        <OTPublisher session={this.sessionHelper.session} />
-
-        {this.state.streams.map(stream => {
-          return (
-            <OTSubscriber
-              key={stream.id}
-              session={this.sessionHelper.session}
-              stream={stream}
-            />
-          );
-        })}
-      </div>
     );
   }
 }
