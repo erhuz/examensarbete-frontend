@@ -12,7 +12,19 @@ class EmployeeCallContainer extends Component {
   }
 
   HangUp = () => {
-    this.props.REMOVE_CURRENT_CALL();
+
+    fetch(process.env.REACT_APP_BACKEND_REST_API + '/call/end/' + this.props.callReducer.call.id, {
+      headers: {
+        Authorization: 'Bearer ' + this.props.authReducer.access_token,
+        Accept: 'application/json',
+      },
+    })
+    .then(res => res.json())
+    .then(json => {
+      this.props.REMOVE_CURRENT_CALL();
+    })
+    .catch(err => {console.error(err);})
+
   }
 
   render() {
@@ -25,7 +37,7 @@ class EmployeeCallContainer extends Component {
             sessionId={this.props.callReducer.call.session_id}
             sessionToken={this.props.callReducer.call.recipient_token}
           />
-          <Button>Hang Up</Button>
+          <Button onClick={this.HangUp}>Hang Up</Button>
         </div>
       );
     }

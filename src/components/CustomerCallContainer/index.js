@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
 import Call from 'components/Call';
+import echoHelper from 'helpers/echo';
+
 
 class CustomerCallContainer extends Component {
 
@@ -8,6 +10,16 @@ class CustomerCallContainer extends Component {
     super(props);
 
     this.state = {};
+  }
+
+  componentWillMount(){
+    const {user, access_token} = this.props.authReducer;
+    const Echo = echoHelper(access_token);
+
+    Echo.private('App.User.' + user.id)
+    .listen('EndCall', (event) => {
+      this.props.REMOVE_CURRENT_CALL();
+    });
   }
 
   requestCall = () => {
